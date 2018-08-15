@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Map from './Components/Map'
+import SideBar from './Components/SideBar'
 
 class App extends Component {
 
@@ -94,7 +95,13 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Map places={this.state.places} />
+        <div className="app-header">
+          <h1>NEIGHBORHOOD MAP</h1>
+        </div>
+        <div className="app-main">
+          <Map places={this.state.places} />
+          <SideBar places={this.state.places} />
+        </div>
       </div>
     );
   }

@@ -20,21 +20,24 @@ class Map extends Component {
   }
 
   initMarkers = () => {
-    this.props.places.map((place)=>{
+    this.props.places.map((place, index, arr)=>{
       let marker = new window.google.maps.Marker({
         map: this.map,
-        position: place.response.venue.location
+        position: place.response.venue.location,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
       })
 
       let infowindow = new window.google.maps.InfoWindow({
         content: place.response.venue.name
       })
 
-      marker.addListener('mouseover', function(event){
+      marker.addListener('mouseover', function(){
         infowindow.open(this.map, marker)
+        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
       })
-      marker.addListener('mouseout', function(event){
+      marker.addListener('mouseout', function(){
         infowindow.close(this.map, marker)
+        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
       })
     })
   }
@@ -54,8 +57,7 @@ class Map extends Component {
           ref="map"
           style={{
             width: mapProps.width,
-            height: mapProps.height,
-            border: '1px solid black'
+            height: mapProps.height
           }}>
         </div>
       </div>
