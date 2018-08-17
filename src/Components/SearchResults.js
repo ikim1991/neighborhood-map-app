@@ -3,6 +3,10 @@ import '../App.css';
 
 class SearchResults extends Component {
 
+  state = {
+    places: this.props.places,
+  }
+
   highlightArea = (selected) => {
     selected.style ="background-color: #198cff;"
   }
@@ -22,6 +26,7 @@ class SearchResults extends Component {
               key={p.response.venue.id}
               onMouseOver={(event)=>this.highlightArea(event.target)}
               onMouseOut={(event)=>this.unhighlightArea(event.target)}
+              onClick={(event)=>this.props.onUpdateResults(event.target)}
             >
               {p.response.venue.name}
             </li>

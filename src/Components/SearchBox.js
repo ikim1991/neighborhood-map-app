@@ -12,7 +12,15 @@ class SearchBox extends Component {
     this.setState({
     query: query
     })
-    console.log(query)
+
+  }
+
+  updateResults = (selected) => {
+    this.props.searchResults(selected.innerHTML)
+    this.props.onClickCenter(selected.innerHTML)
+    this.setState({
+      query: ''
+    })
   }
 
   render() {
@@ -28,7 +36,7 @@ class SearchBox extends Component {
             autoFocus="true"
             onChange={(event)=>this.updateQuery(event.target.value)}
           />
-          <SearchResults places={this.props.places} query={this.state.query}/>
+          <SearchResults places={this.props.places} query={this.state.query} onUpdateResults={this.updateResults}/>
         </form>
       </div>
     );
