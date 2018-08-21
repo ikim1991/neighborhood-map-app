@@ -3,10 +3,6 @@ import '../App.css';
 
 class SearchResults extends Component {
 
-  state = {
-    places: this.props.places,
-  }
-
   highlightArea = (selected) => {
     selected.style ="background-color: #198cff;"
   }
@@ -17,9 +13,18 @@ class SearchResults extends Component {
 
   render() {
     return (
-      <div>
+      <div className="searched-results-container">
         <ul className="searched-results">
-          { (this.props.query) ? (this.props.places.filter(place=> {
+          {(this.props.showingAllResults) ? ((this.props.places[0]) ? (this.props.places.map(p =>
+            <li
+              key={p.response.venue.id}
+              onMouseOver={(event)=>this.highlightArea(event.target)}
+              onMouseOut={(event)=>this.unhighlightArea(event.target)}
+              onClick={(event)=>this.props.onUpdateResults(event.target)}
+            >
+              {p.response.venue.name}
+            </li>
+          )) : (<li>No Listings Found</li>)) : ((this.props.query && this.props.places[0]) ? (this.props.places.filter(place=> {
             return place.response.venue.name.toLowerCase().indexOf(this.props.query.toLowerCase()) !== -1
           }).map(p =>
             <li
@@ -30,7 +35,7 @@ class SearchResults extends Component {
             >
               {p.response.venue.name}
             </li>
-          )) : (<li></li>)}
+          )) : (<li></li>))}
         </ul>
       </div>
     );

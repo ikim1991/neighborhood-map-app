@@ -24,7 +24,7 @@ class Map extends Component {
         let marker = new window.google.maps.Marker({
           map: this.map,
           position: place.response.venue.location,
-          icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+          icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
         })
 
         let infowindow = new window.google.maps.InfoWindow({
@@ -41,6 +41,7 @@ class Map extends Component {
         })
         marker.addListener('click', function(){
           this.onMarkerClick(infowindow.content)
+          marker.setAnimation(window.google.maps.Animation.BOUNCE)
           this.map.panTo(place.response.venue.location)
           this.map.setZoom(17)
         }.bind(this))
