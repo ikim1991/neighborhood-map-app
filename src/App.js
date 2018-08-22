@@ -12,10 +12,10 @@ class App extends Component {
         id: "4ad4c064f964a52074f820e3",
         name: "Aviva Centre"
       },
-      {
-        id: "4b155081f964a520b4b023e3",
-        name: "Scotiabank Arena"
-      },
+      // {
+      //   id: "4b155081f964a520b4b023e3",
+      //   name: "Scotiabank Arena"
+      // },
       // {
       //   id: "4ad4c062f964a520f3f720e3",
       //   name: "BMO Field"
@@ -327,11 +327,16 @@ class App extends Component {
     result: ''
   }
 
+// Making the API call to Foursquare for data prior to rendering the UI
+
   componentWillMount(){
     this.state.locations.map(location=>FoursquareAPI.get(location.id)
       .then(data=>this.state.places.push(data)))
       console.log(this.state.places)
   }
+
+// Clicking a marker on Google Maps will prompt this function, which renders content information about the venue
+// on the side bar
 
   clickMarker = (content) => {
     this.setState({
@@ -339,13 +344,19 @@ class App extends Component {
     })
   }
 
+// This function will call the selected results from it's grandchild component through its child component
+// SearchBox.js
+
   fromSearchResults = (result) => {
     this.setState({
       result: result
     })
   }
 
-  centerMap = (selected) => {
+  // This function prompts when a marker is clicked or selected from its Map.js component. The map will pan out
+  // to recenter and rezoom to the targeted marker
+
+  recenterMap = (selected) => {
     this.sel = selected
   }
 
@@ -353,13 +364,21 @@ class App extends Component {
     const { places } = this.state
     return (
       <div className="App">
-        <div className="app-header">
+        <header className="app-header" role="banner">
           <h1>NEIGHBORHOOD MAP</h1>
-        </div>
-        <div className="app-main">
+        </header>
+        <main className="app-main" role="main">
           <Map places={places} onClickMarker={this.clickMarker} recenter={this.sel}/>
           <div className="sidebar-container">
-            <SearchBox places={places} searchResults={this.fromSearchResults} onClickCenter={this.centerMap}/>
+            <SearchBox places={places} searchResults={this.fromSearchResults} onClickCenter={this.recenterMap}/>
+
+            {
+            // The sidebar container renders information made from the Foursquare API call.
+            // It first filters to see which venue is selected either from a search call or
+            // by clicking the designated marker and displays information such as a photo of the venue,
+            // address info, website, and tips & reviews from users on Foursquare.
+            }
+
             <div className="contentinfo-container">
               <div className="contentinfo">
                 {places.filter(place => place.response.venue.name === this.state.result).map(p => {
@@ -369,7 +388,7 @@ class App extends Component {
                       <img
                         src = {`${p.response.venue.bestPhoto.prefix}width${p.response.venue.bestPhoto.width}${p.response.venue.bestPhoto.suffix}`}
                         height="85%" width="85%"
-                        alt="venue-photo"
+                        alt="venue"
                       />
                       <div className="address-info">
                         <p><strong>Address:</strong> {p.response.venue.location.address}, {p.response.venue.location.city}, {p.response.venue.location.state}, {p.response.venue.location.postalCode}</p>
@@ -396,7 +415,7 @@ class App extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     );
   }

@@ -19,6 +19,9 @@ class SearchBox extends Component {
 
   }
 
+  // This function passes down data from the parent component to it's child component in order
+  // render and update the sidebar container UI and recenter Google Maps to the correct venue
+
   updateResults = (selected) => {
     this.props.searchResults(selected.innerHTML)
     this.props.onClickCenter(selected.innerHTML)
@@ -27,9 +30,12 @@ class SearchBox extends Component {
     })
   }
 
+  // This function lists all venues in the directory and renders the list as search results
+  // via a button
+
   showAll = (e) => {
     e.preventDefault();
-    if (this.state.button.showAll == false) {
+    if (this.state.button.showAll === false) {
       this.setState({
         button: {
           showAll: true,

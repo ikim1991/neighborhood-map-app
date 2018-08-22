@@ -12,12 +12,18 @@ class Map extends Component {
     },
   }
 
+  // initMap() function will initialize the google maps API on load
+
   initMap = () => {
       this.map = new window.google.maps.Map(this.refs.map, {
         center: this.state.mapProps.center,
         zoom: this.state.mapProps.zoom
       })
   }
+
+  // This function maps through the venues that are fetched from the Foursquare API
+  // and initalizes a marker and infowindow based on the location of the venue.
+  // It also adds functionality when markers are clicked and hovered over.
 
   initMarkers = () => {
       this.props.places.map((place)=>{
@@ -48,6 +54,9 @@ class Map extends Component {
       })
   }
 
+// This function pulls information from the parent component to add custom functions to
+// markers such as panning and zooming when clicked
+
   onMarkerClick = (content) => {
     this.props.onClickMarker(content)
   }
@@ -56,6 +65,9 @@ class Map extends Component {
     this.initMap()
     this.initMarkers()
   }
+
+// When a venue is selected through the search bar, the parent component passes properties
+// down and rerenders the UI allowing it to pan over and zoom to the selected venue
 
   componentDidUpdate(){
     this.props.places.filter(place => place.response.venue.name === this.props.recenter)
@@ -73,6 +85,7 @@ class Map extends Component {
       <div className="map-container">
         <div
           ref="map"
+          role="application"
           style={{
             width: mapProps.width,
             height: mapProps.height

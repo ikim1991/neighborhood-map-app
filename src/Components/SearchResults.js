@@ -14,6 +14,11 @@ class SearchResults extends Component {
   render() {
     return (
       <div className="searched-results-container">
+
+      {
+        // The rendering of the venue list components are broken into 2 sections, one for show all
+        // results, and the other for filtering through the array of venues through a filtering method
+      }
         <ul className="searched-results">
           {(this.props.showingAllResults) ? ((this.props.places[0]) ? (this.props.places.map(p =>
             <li
