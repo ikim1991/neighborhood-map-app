@@ -16,6 +16,7 @@ After the app has been cloned from the repository the app can be accessed by:
 
   1. React
   2. JavaScript
+  3. NodeJS
   3. Google Maps & Foursquare APIs
   4. Service Worker for Caching
 
@@ -24,7 +25,7 @@ After the app has been cloned from the repository the app can be accessed by:
 The current app is using a standard (free) API key generated from Foursquare. This will limit the number
 of API calls that can be made daily and a limited amount of content that is being called.
 A payment is required to generate a premium API Key from Foursquare. When the API quota is exceeded, the app
-will not be able to fetch the data. Check your console to see the status of the incoming API calls.
+will not be able to render the venue information. Check your console to see the status of the incoming API calls.
 
 ## Google Maps API ##
 

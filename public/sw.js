@@ -12,23 +12,19 @@ const cacheFiles = [
 ]
 
 self.addEventListener('install', (e)=>{
-  console.log("Service Worker Installed")
 
   e.waitUntil(
     caches.open(staticCacheName).then(cache =>{
-      console.log("Caching Files")
       return cache.addAll(cacheFiles)
     })
   )
 })
 
 self.addEventListener('fetch', (e)=>{
-  console.log("Service Worker Fetching")
   e.respondWith(
     caches.match(e.request)
     .then(res => {
       if (res) {
-        console.log("Serviceworker Found in cache")
         return res;
       }
       return fetch(e.request)

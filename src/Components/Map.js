@@ -26,17 +26,16 @@ class Map extends Component {
   // It also adds functionality when markers are clicked and hovered over.
 
   initMarkers = () => {
-      this.props.places.map((place)=>{
+        this.props.locations.map((location)=>{
         let marker = new window.google.maps.Marker({
           map: this.map,
-          position: place.response.venue.location,
+          position: location.position,
           icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
         })
 
         let infowindow = new window.google.maps.InfoWindow({
-          content: place.response.venue.name
+          content: location.name
         })
-
         marker.addListener('mouseover', function(){
           infowindow.open(this.map, marker)
           marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
@@ -48,7 +47,7 @@ class Map extends Component {
         marker.addListener('click', function(){
           this.onMarkerClick(infowindow.content)
           marker.setAnimation(window.google.maps.Animation.BOUNCE)
-          this.map.panTo(place.response.venue.location)
+          this.map.panTo(location.position)
           this.map.setZoom(17)
         }.bind(this))
       })
@@ -70,9 +69,9 @@ class Map extends Component {
 // down and rerenders the UI allowing it to pan over and zoom to the selected venue
 
   componentDidUpdate(){
-    this.props.places.filter(place => place.response.venue.name === this.props.recenter)
-      .map(p => {
-        this.map.panTo(p.response.venue.location)
+    this.props.locations.filter(location => location.name === this.props.recenter)
+      .map(l => {
+        this.map.panTo(l.position)
         this.map.setZoom(17)
       })
   }
