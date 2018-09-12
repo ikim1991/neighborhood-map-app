@@ -15,10 +15,11 @@ After the app has been cloned from the repository the app can be accessed by:
 ## Built With ##
 
   1. React
-  2. JavaScript
-  3. NodeJS
-  3. Google Maps & Foursquare APIs
-  4. Service Worker for Caching
+  2. Redux
+  3. JavaScript
+  4. NodeJS
+  5. Google Maps & Foursquare APIs
+  6. Service Worker for Caching
 
 ## Foursquare API ##
 

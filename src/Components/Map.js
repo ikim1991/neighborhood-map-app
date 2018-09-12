@@ -1,24 +1,21 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import '../App.css';
 
 class Map extends Component {
-
-  state = {
-    mapProps: {
-      center: {lat: 43.6629, lng: -79.3957},
-      zoom: 12,
-      width: '100%',
-      height: '100vh'
-    },
-  }
 
   // initMap() function will initialize the google maps API on load
 
   initMap = () => {
       this.map = new window.google.maps.Map(this.refs.map, {
-        center: this.state.mapProps.center,
-        zoom: this.state.mapProps.zoom
+        center: this.props.mapProps.center,
+        zoom: this.props.mapProps.zoom
       })
+  }
+
+  componentDidMount() {
+    this.initMap();
+    this.initMarkers();
   }
 
   // This function maps through the venues that are fetched from the Foursquare API
@@ -26,73 +23,62 @@ class Map extends Component {
   // It also adds functionality when markers are clicked and hovered over.
 
   initMarkers = () => {
-        this.props.locations.map((location)=>{
-        let marker = new window.google.maps.Marker({
-          map: this.map,
-          position: location.position,
-          icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-        })
-
-        let infowindow = new window.google.maps.InfoWindow({
-          content: location.name
-        })
-        marker.addListener('mouseover', function(){
-          infowindow.open(this.map, marker)
-          marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
-        })
-        marker.addListener('mouseout', function(){
-          infowindow.close(this.map, marker)
-          marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
-        })
-        marker.addListener('click', function(){
-          this.onMarkerClick(infowindow.content)
-          marker.setAnimation(window.google.maps.Animation.BOUNCE)
-          this.map.panTo(location.position)
-          this.map.setZoom(17)
-        }.bind(this))
+      this.props.locations.map((location)=>{
+      const marker = new window.google.maps.Marker({
+        map: this.map,
+        position: location.position,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
       })
-  }
 
-// This function pulls information from the parent component to add custom functions to
-// markers such as panning and zooming when clicked
-
-  onMarkerClick = (content) => {
-    this.props.onClickMarker(content)
-  }
-
-  componentDidMount() {
-    this.initMap()
-    this.initMarkers()
-  }
-
-// When a venue is selected through the search bar, the parent component passes properties
-// down and rerenders the UI allowing it to pan over and zoom to the selected venue
-
-  componentDidUpdate(){
-    this.props.locations.filter(location => location.name === this.props.recenter)
-      .map(l => {
-        this.map.panTo(l.position)
-        this.map.setZoom(17)
+      let infowindow = new window.google.maps.InfoWindow({
+        content: location.name
       })
+      marker.addListener('mouseover', function(){
+        infowindow.open(this.map, marker)
+        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+      })
+      marker.addListener('mouseout', function(){
+        infowindow.close(this.map, marker)
+        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+      })
+      marker.addListener('click', function(){
+        this.props.setSelect(location.id)
+        marker.setAnimation(window.google.maps.Animation.BOUNCE)
+        setTimeout(function(){ marker.setAnimation(null); }, 2500)
+        // this.map.panTo(location.position)
+        // this.map.setZoom(17)
+      }.bind(this))
+    })
   }
 
   render() {
 
-    const { mapProps } = this.state
-
     return (
       <div className="map-container">
         <div
-          ref="map"
-          role="application"
-          style={{
-            width: mapProps.width,
-            height: mapProps.height
-          }}>
+        ref="map"
+        role="application"
+        style={{
+          width: '100%',
+          height: '100vh'
+        }}>
         </div>
       </div>
     );
   }
 }
 
-export default Map;
+const mapStateToProps = (state) => {
+  return {
+    mapProps: state.mapReducer.mapProps,
+    locations: state.mapReducer.locations
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setSelect: (sel) => dispatch({ type: 'SET_SELECT', payload: sel})
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Map);

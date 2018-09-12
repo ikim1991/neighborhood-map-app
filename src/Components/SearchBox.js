@@ -1,56 +1,9 @@
 import React, { Component } from 'react';
 import SearchResults from './SearchResults'
+import { connect } from 'react-redux'
 import '../App.css';
 
 class SearchBox extends Component {
-
-  state = {
-    query:'',
-    button: {
-      showAll: false,
-      text: 'Show All'
-    }
-  }
-
-  updateQuery = (query) => {
-    this.setState({
-    query: query
-    })
-
-  }
-
-  // This function passes down data from the parent component to it's child component in order
-  // render and update the sidebar container UI and recenter Google Maps to the correct venue
-
-  updateResults = (selected) => {
-    this.props.searchResults(selected.innerHTML)
-    this.props.onClickCenter(selected.innerHTML)
-    this.setState({
-      query: ''
-    })
-  }
-
-  // This function lists all venues in the directory and renders the list as search results
-  // via a button
-
-  showAll = (e) => {
-    e.preventDefault();
-    if (this.state.button.showAll === false) {
-      this.setState({
-        button: {
-          showAll: true,
-          text: 'Hide All'
-        }
-      })
-    } else {
-      this.setState({
-        button: {
-          showAll: false,
-          text: 'Show All'
-        }
-      })
-    }
-  }
 
   render() {
 
@@ -61,21 +14,20 @@ class SearchBox extends Component {
             className="search-bar"
             type="text"
             placeholder="Search Marked Venues..."
-            value={this.state.query}
+            value={this.props.query}
             autoFocus="true"
-            onChange={(event)=>this.updateQuery(event.target.value)}
+            onChange={(event)=>this.props.updateQuery(event.target.value)}
           />
           <button
             className="search-results-button"
-            onClick={(event)=>this.showAll(event)}
+            onClick={(event)=>this.props.toggleButton(event)}
           >
-            {this.state.button.text}
+            {this.props.button.buttonText}
           </button>
           <SearchResults
             places={this.props.places}
-            query={this.state.query}
-            onUpdateResults={this.updateResults}
-            showingAllResults={this.state.button.showAll}
+            query={this.props.query}
+            showingAllResults={this.props.button.visibility}
           />
 
         </form>
@@ -84,4 +36,28 @@ class SearchBox extends Component {
   }
 }
 
-export default SearchBox;
+const mapStateToProps = (state) => {
+  return {
+    locations: state.mapReducer.location,
+    places: state.mapReducer.places,
+    query: state.mapReducer.query,
+    button: state.mapReducer.buttonVisibilityFilter
+  }
+}
+
+const dispatchToProps = (dispatch) => {
+  return {
+    updateQuery: (query) => dispatch({
+      type: 'UPDATE_QUERY',
+      payload: {
+        query: query
+      }
+    }),
+    toggleButton: (e) => dispatch({
+      type: 'TOGGLE_BUTTON',
+      payload: e
+    })
+  }
+}
+
+export default connect(mapStateToProps, dispatchToProps)(SearchBox);

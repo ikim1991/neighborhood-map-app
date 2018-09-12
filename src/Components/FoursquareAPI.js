@@ -13,7 +13,7 @@ export const get = (venue_ID) =>
         console.log("Error API Not Found")
         return;
       } else if (data.meta.code === 200) {
-        console.log("API Successful")
+        console.log("API Successful", data)
         return data;
       }
     })

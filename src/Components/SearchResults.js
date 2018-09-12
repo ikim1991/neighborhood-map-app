@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import '../App.css';
 
 class SearchResults extends Component {
 
   highlightArea = (selected) => {
-    selected.style ="background-color: #198cff;"
+    selected.style = "background-color: #198cff;"
   }
 
   unhighlightArea = (selected) => {
-    selected.style ="background-color: #f8f8ff;"
+    selected.style = "background-color: #f8f8ff;"
   }
 
   render() {
@@ -20,23 +21,25 @@ class SearchResults extends Component {
         // results, and the other for filtering through the array of venues through a filtering method
       }
         <ul className="searched-results">
-          {(this.props.showingAllResults) ? ((this.props.places[0]) ? (this.props.places.map(p =>
-            <li
-              key={p.response.venue.id}
-              onMouseOver={(event)=>this.highlightArea(event.target)}
-              onMouseOut={(event)=>this.unhighlightArea(event.target)}
-              onClick={(event)=>this.props.onUpdateResults(event.target)}
-            >
-              {p.response.venue.name}
-            </li>
-          )) : (<li>No Listings Found</li>)) : ((this.props.query && this.props.places[0]) ? (this.props.places.filter(place=> {
+          {(this.props.button.visibility) ? ((this.props.places[0]) ? (this.props.places.filter(place=> {
             return place.response.venue.name.toLowerCase().indexOf(this.props.query.toLowerCase()) !== -1
           }).map(p =>
             <li
               key={p.response.venue.id}
               onMouseOver={(event)=>this.highlightArea(event.target)}
               onMouseOut={(event)=>this.unhighlightArea(event.target)}
-              onClick={(event)=>this.props.onUpdateResults(event.target)}
+              onClick={() => this.props.setSelect(p.response.venue.id)}
+            >
+              {p.response.venue.name}
+            </li>
+          )) : (<li>API Quota Exceeded</li>)) : ((this.props.query && this.props.places[0]) ? (this.props.places.filter(place=> {
+            return place.response.venue.name.toLowerCase().indexOf(this.props.query.toLowerCase()) !== -1
+          }).map(p =>
+            <li
+              key={p.response.venue.id}
+              onMouseOver={(event)=>this.highlightArea(event.target)}
+              onMouseOut={(event)=>this.unhighlightArea(event.target)}
+              onClick={() => this.props.setSelect(p.response.venue.id)}
             >
               {p.response.venue.name}
             </li>
@@ -47,4 +50,19 @@ class SearchResults extends Component {
   }
 }
 
-export default SearchResults;
+const mapStateToProps = (state) => {
+  return {
+    locations: state.mapReducer.location,
+    places: state.fetchReducer.places,
+    query: state.mapReducer.query,
+    button: state.mapReducer.buttonVisibilityFilter
+  }
+}
+
+const dispatchToProps = (dispatch) => {
+  return {
+    setSelect: (sel) => dispatch({ type: 'SET_SELECT', payload: sel})
+  }
+}
+
+export default connect(mapStateToProps, dispatchToProps)(SearchResults);
